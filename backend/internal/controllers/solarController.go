@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -76,3 +77,32 @@ func CalcSolar(c echo.Context) error {
 		"data": Pactual,
 	})
 }
+
+func CSV(c echo.Context) error {
+	filePath := "C:\\Users\\Akshat\\Desktop\\Tests\\yantra-hack\\backend\\public\\realistic_panel_1_sensor_data.csv"
+
+	// Read CSV data
+	data, err := utils.ReadCSV(filePath)
+	if err != nil {
+		log.Fatalf("Error: %v", err)
+	}
+	for i, row := range data {
+		T, _ := utils.StringToFloat(row["Temperature (°C)"])
+		D, _ := utils.StringToFloat(row["Dust (µg/m³)"])
+		I, _ := utils.StringToFloat(row["Luminosity (lux)"]) 
+		RH, _ := utils.StringToFloat(row["Humidity (%)"])
+		P, _ := utils.StringToFloat(row["Pressure (hPa)"])
+		Prated := 300.0 
+
+		Pactual := utils.EvaluateConstant(T, D, I, RH, P, Prated)
+
+		fmt.Printf("Row %d: Pactual = %.2f\n", i+2, Pactual)
+		fmt.Print("\n")
+	}
+	return c.JSON(http.StatusAccepted, map[string]string{
+		"message": "Successfully updated data",
+		"data":    filePath,
+		"status":  "true",
+	})
+}
+
