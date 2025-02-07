@@ -8,4 +8,6 @@ import (
 func SolarRoutes(e *echo.Echo) {
 	r := e.Group("/solar")
 	r.POST("/post", controllers.SolarInput)
+	r.GET("/get", controllers.GetAllSolar)
+	
 }

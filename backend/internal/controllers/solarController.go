@@ -37,3 +37,17 @@ func SolarInput(c echo.Context) error {
 	})
 
 }
+
+func GetAllSolar(c echo.Context) error {
+	solar, err := services.GetAllSolar()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Failed to input",
+			"data":    err.Error(),
+			"status":  "false",
+		})
+	}
+	return c.JSON(http.StatusOK, solar)
+
+}
+
