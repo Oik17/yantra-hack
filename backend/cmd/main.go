@@ -3,14 +3,16 @@ package main
 import (
 	"net/http"
 
+	"github.com/Oik17/yantra-hack/internal/database"
 	routes "github.com/Oik17/yantra-hack/internal/routers"
 	"github.com/Oik17/yantra-hack/internal/utils"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	utils.PrintSiamBanner()
+	utils.PrintYantraBanner()
+	database.Connect()
 	e := echo.New()
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `{"time":"${time_custom}","remote_ip":"${remote_ip}",` +
