@@ -29,5 +29,6 @@ func main() {
 	})
 
 	routes.WeatherRoutes(e)
+	routes.SolarRoutes(e)
 	e.Start(":8080")
 }
