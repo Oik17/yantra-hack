@@ -12,7 +12,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Button } from "@/components/ui/button";
 import Navbar from "@/components/navbar";
 
 ChartJS.register(
@@ -37,7 +36,6 @@ const WindPage = () => {
     }[];
   } | null>(null);
 
-  const [currentDay, setCurrentDay] = useState(0);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   // const [groupedForecastData, setGroupedForecastData] = useState<{
@@ -225,46 +223,6 @@ const WindPage = () => {
     fetchData();
   });
 
-  const setPrev = () => {
-    setCurrentDay((prev) => {
-      const newDay = prev > 0 ? prev - 1 : prev;
-      updateChart(newDay); // Now updateChart gets the correct updated value
-      return newDay;
-    });
-  };
-
-  const setNext = () => {
-    setCurrentDay((prev) => {
-      const newDay = prev + 1;
-      updateChart(newDay); // Now updateChart gets the correct updated value
-      return newDay;
-    });
-  };
-  useEffect(() => {
-    updateChart(currentDay);
-  });
-  const updateChart = (dayIndex: number) => {
-    if (!chartData || !chartData.datasets.length) return;
-
-    const startIndex = dayIndex * 24;
-
-    const windData = chartData.datasets[0].data.slice(
-      startIndex,
-      startIndex + 168
-    );
-
-    if (windData.length === 0) return;
-
-    setChartData((prevData) =>
-      prevData
-        ? {
-            ...prevData,
-            datasets: [{ ...prevData.datasets[0], data: windData }],
-          }
-        : prevData
-    );
-  };
-
   return (
     <>
       <Navbar />
@@ -284,18 +242,7 @@ const WindPage = () => {
               <p>Loading chart...</p>
             )}
           </div>
-          <div className="w-full flex items-center justify-between">
-            <Button
-              className="w-16 px-10 py-5"
-              onClick={setPrev}
-              disabled={currentDay === 0}
-            >
-              Previous
-            </Button>
-            <Button className="w-16 p-2" onClick={setNext}>
-              Next
-            </Button>
-          </div>
+          <div className="w-full flex items-center justify-between"></div>
         </div>
       </div>
     </>

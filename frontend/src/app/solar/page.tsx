@@ -12,8 +12,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Button } from "@/components/ui/button";
 import Navbar from "@/components/navbar";
+import Link from "next/link";
 
 ChartJS.register(
   LineElement,
@@ -37,7 +37,6 @@ const SolarPage = () => {
     }[];
   } | null>(null);
 
-  const [currentDay, setCurrentDay] = useState(0);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   // const [groupedForecastData, setGroupedForecastData] = useState<{
@@ -252,73 +251,16 @@ const SolarPage = () => {
     fetchData();
   });
 
-  const setPrev = () => {
-    setCurrentDay((prev) => {
-      const newDay = prev > 0 ? prev - 1 : prev;
-      updateChart(newDay); // Now updateChart gets the correct updated value
-      return newDay;
-    });
-  };
-
-  const setNext = () => {
-    setCurrentDay((prev) => {
-      const newDay = prev + 1;
-      updateChart(newDay); // Now updateChart gets the correct updated value
-      return newDay;
-    });
-  };
-  useEffect(() => {
-    updateChart(currentDay);
-  });
-  const updateChart = (dayIndex: number) => {
-    if (!chartData || !chartData.datasets.length) return;
-
-    const startIndex = dayIndex * 24;
-
-    // Ensure forecast data slicing doesn't go out of bounds
-    const predictedSolarData = chartData.datasets[1].data.slice(
-      startIndex,
-      startIndex + 168
-    );
-    if (startIndex + 168 < 100) {
-      const predictedSolarData = chartData.datasets[2].data.slice(
-        startIndex,
-        startIndex + 168
-      );
-      return predictedSolarData;
-    }
-    const solarData = chartData.datasets[0].data.slice(
-      startIndex,
-      startIndex + 168
-    );
-    if (startIndex + 168 < 100) {
-      const solarData = chartData.datasets[1].data.slice(
-        startIndex,
-        startIndex + 168
-      );
-      return solarData;
-    }
-
-    if (predictedSolarData.length === 0 || solarData.length === 0) return;
-
-    setChartData((prevData) =>
-      prevData
-        ? {
-            ...prevData,
-            datasets: [
-              { ...prevData.datasets[0], data: solarData },
-              { ...prevData.datasets[1], data: predictedSolarData },
-            ],
-          }
-        : prevData
-    );
-  };
-
   return (
     <>
       <Navbar />
       <div className="p-2">
-        <h1 className="text-3xl font-bold mt-20 mb-4">Solar Data</h1>
+        <div className="flex items-center justify-between px-4 text-3xl font-bold mt-20 mb-4 text-right">
+          <h1>Solar Data</h1>
+          <Link href="/dust-deposition">
+            <span>Dust deposition</span>
+          </Link>
+        </div>
         <div className="w-full flex flex-col h-full bg-white p-1 rounded-lg shadow-lg">
           <div className="flex w-full h-fit">
             {chartData ? (
@@ -333,18 +275,7 @@ const SolarPage = () => {
               <p>Loading chart...</p>
             )}
           </div>
-          <div className="w-full flex items-center justify-between">
-            <Button
-              className="w-16 px-10 py-5"
-              onClick={setPrev}
-              disabled={currentDay === 0}
-            >
-              Previous
-            </Button>
-            <Button className="w-16 p-2" onClick={setNext}>
-              Next
-            </Button>
-          </div>
+          <div className="w-full flex items-center justify-between"></div>
         </div>
       </div>
     </>
