@@ -79,9 +79,7 @@ func CalcSolar(c echo.Context) error {
 }
 
 
-
 func CSV(c echo.Context) error {
-	// List of file paths
 	filePaths := []string{
 		"./public/realistic_panel_1_7days_sensor_data.csv",
 		"./public/realistic_panel_2_7days_sensor_data.csv",
@@ -97,21 +95,16 @@ func CSV(c echo.Context) error {
 		
 	}
 
-	// Container to store all results
 	var allResults [][]float64
 
-	// Loop through each file
 	for _, filePath := range filePaths {
-		// Read CSV data
 		data, err := utils.ReadCSV(filePath)
 		if err != nil {
 			log.Fatalf("Error reading %s: %v", filePath, err)
 		}
 
-		// Store results for this panel
 		var panelResults []float64
 
-		// Iterate over rows in CSV
 		for i, row := range data {
 			T, _ := utils.StringToFloat(row["Temperature (°C)"])
 			D, _ := utils.StringToFloat(row["Dust (µg/m³)"])
@@ -120,18 +113,15 @@ func CSV(c echo.Context) error {
 			P, _ := utils.StringToFloat(row["Pressure (hPa)"])
 			Prated := 300.0 // Constant
 
-			// Compute Pactual
 			Pactual := utils.EvaluateConstant(T, D, I, RH, P, Prated) * (-1)
 			panelResults = append(panelResults, Pactual)
 
 			fmt.Printf("File: %s | Row %d: Pactual = %.2f\n", filePath, i+2, Pactual)
 		}
 
-		// Append panel results to overall result
 		allResults = append(allResults, panelResults)
 	}
 
-	// Return results as array of arrays
 	return c.JSON(http.StatusAccepted, map[string]interface{}{
 		"message": "Successfully updated data",
 		"data":    allResults,
