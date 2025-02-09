@@ -1,26 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:yantra_blackspace/constants.dart';
+import 'package:yantra_blackspace/models/solar_data.dart';
+import 'package:yantra_blackspace/services/api_service.dart';
+import 'package:yantra_blackspace/services/circular_button.dart';
 import 'package:yantra_blackspace/widgets/line_chart.dart';
 
-class HomeContent extends StatelessWidget {
-  const HomeContent({super.key});
+class HomeContent extends StatefulWidget {
+  HomeContent({super.key});
+
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+  List<List<double>> solarDataList = [];
+  int startIndex = 0, endIndex = 96, indexCount = 96, weekIdx = 0;
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    ApiService apiService = ApiService();
+    SolarData? data = await apiService.fetchSolarData();
+    if (data != null) {
+      setState(() {
+        solarDataList = data.data.cast<List<double>>();
+      });
+    }
+  }
+
+  void nextDay() {
+    if (endIndex < 672 && weekIdx < 7) {
+      setState(() {
+        endIndex += indexCount;
+        startIndex += indexCount;
+        weekIdx++;
+      });
+    }
+  }
+
+  void prevDay() {
+    if (startIndex > 0 && weekIdx >= 0) {
+      setState(() {
+        endIndex -= indexCount;
+        startIndex -= indexCount;
+        weekIdx--;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _buildHeader(),
-              SizedBox(height: 16),
-              buildChart(),
-              SizedBox(height: 16),
-              _buildStatsGrid(),
-              Spacer(),
-            ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _buildHeader(weekIdx),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CircularButton(prevDay, 'Prev'),
+                    CircularButton(nextDay, 'Next'),
+                  ],
+                ),
+                SizedBox(height: 16),
+                // buildChart(),
+                solarDataList.isEmpty
+                    ? CircularProgressIndicator() // Show loading while fetching
+                    : buildChart(solarDataList, startIndex, endIndex),
+                SizedBox(height: 16),
+                _buildStatsGrid(),
+              ],
+            ),
           ),
         ),
       ),
@@ -28,7 +86,16 @@ class HomeContent extends StatelessWidget {
   }
 }
 
-Widget _buildHeader() {
+Widget _buildHeader(int weekIndex) {
+  List<String> weeks = [
+    'Mon',
+    'Tues',
+    'Wednes',
+    'Thurs',
+    'Fri',
+    'Satur',
+    'Sun'
+  ];
   return Container(
     padding: EdgeInsets.all(16),
     decoration: BoxDecoration(
@@ -87,9 +154,15 @@ Widget _buildHeader() {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Text('Today',
+          child: SizedBox(
+            width: 75,
+            child: Text(
+              weeks[weekIndex] + 'day',
+              textAlign: TextAlign.center,
               style:
-                  TextStyle(color: primaryOrange, fontWeight: FontWeight.w600)),
+                  TextStyle(color: primaryOrange, fontWeight: FontWeight.w600),
+            ),
+          ),
         ),
       ],
     ),
