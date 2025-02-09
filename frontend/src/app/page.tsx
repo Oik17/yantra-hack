@@ -4,6 +4,7 @@ import { AnimatePresence, easeInOut, motion } from "framer-motion";
 import "./page.module.css";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -37,8 +38,30 @@ export default function Home() {
           >
             Go to settings
           </Link>
+          <div className="mt-32 absolute -bottom-[40rem] left-[15rem] flex items-center justify-center w-[58rem] h-fit gap-x-5 p-2">
+            <Link href="/solar">
+              <div className="flex flex-col items-center justify-center w-56 h-56 bg-gradient-to-r from-[#ff9800] to-[#f57c00] rounded-lg">
+                <span className="text-white text-2xl mt-4">Solar</span>
+                <br />
+                <Image src="/solar.png" alt="solar" width={150} height={150} />
+              </div>
+            </Link>
+            <Link href="/wind">
+              <div className="flex flex-col items-center justify-center w-56 h-56 bg-gradient-to-r from-[#ff9800] to-[#f57c00] rounded-lg m-auto">
+                <span className="text-white text-2xl mt-10">Wind</span>
+                <Image src="/wind.png" alt="wind" width={150} height={150} />
+              </div>
+            </Link>
+            {/* <Link href="/hydro">
+              <div className="flex flex-col items-center justify-center w-56 h-56 bg-gradient-to-r from-[#ff9800] to-[#f57c00] rounded-lg">
+                <span className="text-white text-2xl mt-10">Hydro</span>
+                <br />
+                <Image src="/hydro.png" alt="hydro" width={180} height={180} />
+              </div>
+            </Link> */}
+          </div>
           <motion.div
-            key="circle2"
+            key="new"
             initial={{ y: 170, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.4, ease: easeInOut, delay: 1.5 }}
