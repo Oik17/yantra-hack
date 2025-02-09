@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, easeInOut, motion } from "framer-motion";
-import "./page.module.css";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
 import Image from "next/image";
