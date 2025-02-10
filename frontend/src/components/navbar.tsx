@@ -25,17 +25,6 @@ const Navbar = () => {
           Home
         </span>
       </Link>
-      <Link href="/dashboard">
-        <span
-          className={`relative after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 after:transform after:origin-center ${
-            pathname === "/dashboard"
-              ? "transition-all duration-500 text-orange-500 underline"
-              : "after:w-0 after:left-1/2 hover:after:w-full hover:after:left-0"
-          }`}
-        >
-          Dashboard
-        </span>
-      </Link>
       <Link href="/wind">
         <span
           className={`relative after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 after:transform after:origin-center ${
