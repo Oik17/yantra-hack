@@ -1,1 +1,1 @@
-Yantra-Hack: Sustainable Development Track
+Yantra-Hack: Sustainable Development Track.
